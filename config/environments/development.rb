@@ -72,4 +72,7 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  Rails.logger = Logger.new(STDOUT)
+  config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 end
