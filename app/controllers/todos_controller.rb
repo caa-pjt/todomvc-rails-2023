@@ -4,6 +4,9 @@ class TodosController < ApplicationController
   # GET /todos or /todos.json
   def index
     @todos = Todo.order(:created_at)
+    if params[:scope].in?(%w[active completed])
+      @todos = @todos.public_send(params[:scope])
+    end
   end
 
   # GET /todos/1.json
@@ -20,10 +23,10 @@ class TodosController < ApplicationController
 
     respond_to do |format|
       if @todo.save
-        format.html { redirect_to todos_url }
+        format.html { redirect_back_or_to todos_url }
         format.json { render :show, status: :created, location: @todo }
       else
-        format.html { redirect_to todos_url }
+        format.html { redirect_back_or_to todos_url }
         format.json { render json: @todo.errors, status: :unprocessable_entity }
       end
     end
@@ -33,7 +36,7 @@ class TodosController < ApplicationController
   def update
     respond_to do |format|
       if @todo.update(todo_params)
-        format.html { redirect_to todos_url }
+        format.html { redirect_back_or_to todos_url }
         format.json { render :show, status: :ok, location: @todo }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -47,7 +50,7 @@ class TodosController < ApplicationController
     @todo.destroy!
 
     respond_to do |format|
-      format.html { redirect_to todos_url }
+      format.html { redirect_back_or_to todos_url }
       format.json { head :no_content }
     end
   end
